@@ -20,9 +20,14 @@ export default class TodosList extends Component {
   constructor(props){
     super(props);
     this.state = {todos: []};
+    this._isMounted = false;
+
   }
 
+
+
   componentDidMount(){
+    this._isMounted=true;
     axios.get('http://localhost:4000/todos')
       .then(response => {
         this.setState({todos: response.data});
@@ -31,16 +36,27 @@ export default class TodosList extends Component {
         console.log(err);
       })
   }
+
+  componentWillUnmount(){
+     this._isMounted = false;
+   }
+
 
   componentDidUpdate(){
     axios.get('http://localhost:4000/todos')
       .then(response => {
+        if(this._isMounted)
+        {
         this.setState({todos: response.data});
+      }
       })
       .catch(function(err){
         console.log(err);
       })
   }
+
+
+
 
 todoList(){
   return this.state.todos.map(function(currentTodo, i){
