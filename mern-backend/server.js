@@ -74,6 +74,51 @@ todoRoutes.route('/update/:id').post(function(req, res){
   });
 });
 
+todoRoutes.route('/delete/:id').delete(function(req, res){
+  Todo.findByIdAndRemove(req.params.id, function(err,todo){
+    if(!todo){
+      res.status(404).send('data is not found');
+    }
+    else {
+      const response = {
+          message: "Todo successfully deleted",
+          id: todo._id
+      };
+      return res.status(200).send(response);
+    }
+  })
+})
+
+// router.delete('/todos/:id', (req, res, next) => {
+//   Todo.findOneAndDelete({"_id": req.params.id})
+//     .then(data => res.json(data))
+//     .catch(next)
+// })
+
+// // The "todo" in this callback function represents the document that was found.
+// // It allows you to pass a reference back to the client in case they need a reference for some reason.
+// Todo.findByIdAndRemove(req.params.todoId, (err, todo) => {
+//     // As always, handle any potential errors:
+//     if (err) return res.status(500).send(err);
+//     // We'll create a simple object to send back with a message and the id of the document that was removed
+//     // You can really do this however you want, though.
+//     const response = {
+//         message: "Todo successfully deleted",
+//         id: todo._id
+//     };
+//     return res.status(200).send(response);
+// });
+
+// router.delete('/comments/:commentId', (req, res) => {
+//   const { commentId } = req.params;
+//   if (!commentId) {
+//     return res.json({ success: false, error: 'No comment id provided' });
+//   }
+//   Comment.remove({ _id: commentId }, (error, comment) => {
+//     if (error) return res.json({ success: false, error });
+//     return res.json({ success: true });
+//   });
+// });
 
 todoRoutes.route('/:id').get(function(req, res){
   let id = req.params.id;
