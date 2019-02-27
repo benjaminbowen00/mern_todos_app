@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
+
 
 export default class EditTodo extends Component {
 
@@ -12,6 +16,7 @@ export default class EditTodo extends Component {
       this.onChangeTodoCompleted = this.onChangeTodoCompleted.bind(this);
       this.onSubmit = this.onSubmit.bind(this);
       this.deleteTodo = this.deleteTodo.bind(this);
+
 
       this.state = {
         todo_description: '',
@@ -73,22 +78,36 @@ export default class EditTodo extends Component {
   }
 
   deleteTodo(e){
-
     console.log("delte todo");
-    // const obj = {
-    //   todo_description: this.state.todo_description,
-    //   todo_responsible: this.state.todo_responsible,
-    //   todo_priority: this.state.todo_priority,
-    //   todo_completed: this.state.todo_completed
-    // }
-
-
-
     axios.delete('http://localhost:4000/todos/delete/'+this.props.match.params.id)
       .then(res => console.log("todo deleted:"));
 
     this.props.history.push('/')
   }
+
+
+
+  submitModal = () => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='custom-ui modal-box'>
+            <h3>Are you sure you want to delete this Todo?</h3>
+            <p>This cannot be undone.</p>
+            <div className='modal-footer'>
+            <button onClick={onClose} className="btn btn-secondary">No</button>
+            <button onClick={() => {
+                this.deleteTodo();
+                onClose()
+            }} className="btn btn-primary">Yes, Delete it!</button>
+            </div>
+          </div>
+        )
+      }
+    })
+ };
+
+
 
   render(){
     return (
@@ -160,13 +179,14 @@ export default class EditTodo extends Component {
             <div className="form-group">
             <input type="submit" value="Update Todo" className="btn btn-primary" />
 
-          </div>
+            </div>
           </div>
         </form>
 
-        <button onClick={this.deleteTodo} className="btn btn-primary">
-        Delete
-        </button>
+        <div>
+        <button onClick={this.submitModal} className="btn btn-primary">Delete this Todo</button>
+      </div>
+
       </div>
     )
   }

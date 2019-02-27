@@ -12,7 +12,7 @@ const Todo = props => (
     </td>
   </tr>
 )
-//<td>{props.todo.todo_completed}</td>
+
 
 
 export default class TodosList extends Component {
